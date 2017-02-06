@@ -1077,26 +1077,31 @@ public class UltimateRecyclerView extends FrameLayout implements Scrollable {
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        SavedStateScrolling ss = (SavedStateScrolling) state;
-        mPrevFirstVisiblePosition = ss.prevFirstVisiblePosition;
-        mPrevFirstVisibleChildHeight = ss.prevFirstVisibleChildHeight;
-        mPrevScrolledChildrenHeight = ss.prevScrolledChildrenHeight;
-        mPrevScrollY = ss.prevScrollY;
-        mScrollY = ss.scrollY;
-        mChildrenHeights = ss.childrenHeights;
-        RecyclerView.LayoutManager layoutManager = getLayoutManager();
+        if(state instanceof SavedStateScrolling){
+            SavedStateScrolling ss = (SavedStateScrolling) state;
+            mPrevFirstVisiblePosition = ss.prevFirstVisiblePosition;
+            mPrevFirstVisibleChildHeight = ss.prevFirstVisibleChildHeight;
+            mPrevScrolledChildrenHeight = ss.prevScrolledChildrenHeight;
+            mPrevScrollY = ss.prevScrollY;
+            mScrollY = ss.scrollY;
+            mChildrenHeights = ss.childrenHeights;
+            RecyclerView.LayoutManager layoutManager = getLayoutManager();
 
-        /**
-         * enhanced and store the previous scroll position
-         */
-        if (layoutManager != null) {
-            int count = layoutManager.getChildCount();
-            if (mPrevScrollY != RecyclerView.NO_POSITION && mPrevScrollY < count) {
-                layoutManager.scrollToPosition(mPrevScrollY);
+            /**
+             * enhanced and store the previous scroll position
+             */
+            if (layoutManager != null) {
+                int count = layoutManager.getChildCount();
+                if (mPrevScrollY != RecyclerView.NO_POSITION && mPrevScrollY < count) {
+                    layoutManager.scrollToPosition(mPrevScrollY);
+                }
             }
+
+            super.onRestoreInstanceState(ss.getSuperState());
+        }else{
+            super.onRestoreInstanceState(state);
         }
 
-        super.onRestoreInstanceState(ss.getSuperState());
     }
 
     @Override
